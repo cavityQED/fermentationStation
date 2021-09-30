@@ -70,12 +70,32 @@ public:
 	void setActive(bool active)					{m_active = active;}
 
 	//Getters
-	uint16_t	id()		 const	{return m_params.id;}
-	uint8_t		channel()	 const	{return m_params.channel;}
-	UNIT_TYPE	type()		 const	{return m_params.type;}
-	QString		name()		 const	{return m_params.name;}
-	params_t	params()	 const	{return m_params;}
-	bool		isActive()	 const	{return m_active;}
+	uint16_t	id()		const	{return m_params.id;}
+	uint16_t	clientID()	const	{return m_params.client_id;}
+	uint8_t		channel()	const	{return m_params.channel;}
+	UNIT_TYPE	type()		const	{return m_params.type;}
+	QString		name()		const	{return m_params.name;}
+	params_t	params()	const	{return m_params;}
+	bool		isActive()	const	{return m_active;}
+
+public slots:
+	/**
+	*	Read
+	*		Sends a READ message to the client
+	*
+	**/
+	void read() {
+		if(!m_active)
+			return;
+		
+		net::message<MSG_TYPE> msg;
+		msg.header.id = READ;
+		msg << m_params;
+		if(m_client && m_client->isConnected()) {
+			//get server pointer
+			//send message through pointer
+		}
+	}
 
 signals:
 	void valueChanged(double v);
