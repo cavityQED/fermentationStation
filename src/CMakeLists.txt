@@ -23,10 +23,12 @@ set(QT_LIBRARIES	Qt5::Core
 
 add_subdirectory(control)
 add_subdirectory(common)
+add_subdirectory(network)
 
 set(LINKED_LIBS		pthread
 					${QT_LIBRARIES}
-					control)
+					control
+					network)
 
 add_library				(fermentationStation 	libMain.cpp)
 
