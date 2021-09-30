@@ -44,10 +44,12 @@
 
 enum MSG_TYPE {
 	ACTIVATE,
+	DEACTIVATE,
 	ADD,
 	REMOVE,
 	READ,
-	SET
+	SET,
+	UPDATE,
 };
 
 enum UNIT_TYPE {

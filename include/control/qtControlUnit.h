@@ -87,11 +87,26 @@ public slots:
 	void read() {
 		if(!m_active)
 			return;
-		
+
 		net::message<MSG_TYPE> msg;
 		msg.header.id = READ;
 		msg << m_params;
 		if(m_client && m_client->isConnected()) {
+			//get server pointer
+			//send message through pointer
+		}
+	}
+
+	/**
+	*	Connect to Client
+	*		Send an activate message to the client to connect the unit with the associated client object
+	*
+	*/
+	void connect() {
+		if(m_client) {
+			net::message<MSG_TYPE> msg;
+			msg.header.id = ACTIVATE;
+			msg << m_params;
 			//get server pointer
 			//send message through pointer
 		}
