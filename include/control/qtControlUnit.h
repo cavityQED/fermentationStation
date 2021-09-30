@@ -3,50 +3,98 @@
 
 #include "common/qtCommon.h"
 
-class qtControlUnit
+class qtControlUnit : public QWidget
 {
 	Q_OBJECT
 public:
 	//Struct to pass info 
-	struct prop_t {
+	struct params_t {
 		uint16_t		id;
+		uint16_t		client_id;
 		uint8_t			channel;
 		UNIT_TYPE		type;
 		QString			name;
 		double			value;
 	};
 
-	qtControlUnit(const properties& p, QWidget* parent = nullptr);
+	/*
+	*	Contructor
+	*		
+	*		Initializes property variables
+	*		Creates Qt Widgets and initializes values
+	*		Adds an entry to the tmpUnits map
+	*/
+	qtControlUnit(const params_t& p, QWidget* parent = nullptr);
 	~qtControlUnit() {}
 
+	/**
+	*	Get Unit
+	*		
+	*/
+	static qtControlUnit* getUnit(uint16_t id)			{return __allUnits.contains(id)? __allUnits[id] : nullptr;}
+	static qtControlUnit* getUnit(const params_t& p)	{return getUnit(p.id);}
+
+	/**
+	*	Activate
+	*		Connect unit to remote sensor on client device
+	*
+	*/
+	static bool activate(const params_t& p, std::shared_ptr<net::connection<MSG_TYPE>> client);
+
+	/**
+	*	Deactivate
+	*		Remove the unit from active units
+	*		Give unit new temp id and add to temp units
+	*
+	*/
+	static bool deactivate(uint16_t id);
+	static bool deactivate(const params_t& p) {return deactivate(p.id);}
+
+	/**
+	*	Update
+	*		Called on reciept of an update message from the client
+	*		Updates the unit's value, emits the valueChanged signal
+	*
+	*/
+	static void update(uint16_t id, double v);
+	static void update(const params_t& p) {update(p.id, p.value);}
+
+
 	//Setters
-	void setID	(uint16_t id)				{m_id = id;}
-	void setName(const std::string name)	{m_name = name;}
+	void setClientID	(uint16_t id)			{m_params.client_id = id;}
+	void setLabel(const QString name)			{m_label->setText(name);}
+	void setName(const QString name)			{m_params.name = name; setLabel(name);}
+	void setEdit(double v)						{m_valueEdit->setText(QString::number(v));}
+	void setValue(double v)						{m_params.value = v; setEdit(v);}
+	void setClient(net_connection_ptr client)	{m_client = client;}
+	void setActive(bool active)					{m_active = active;}
 
 	//Getters
-	uint16_t	id()		 const	{return m_id;}
-	uint8_t		channel()	 const	{return m_channel;}
-	UNIT_TYPE	type()		 const	{return m_type;}
-	QString		name()		 const	{return m_name;}
-	prop_t		properties() const	{return m_properties;}
+	uint16_t	id()		 const	{return m_params.id;}
+	uint8_t		channel()	 const	{return m_params.channel;}
+	UNIT_TYPE	type()		 const	{return m_params.type;}
+	QString		name()		 const	{return m_params.name;}
+	params_t	params()	 const	{return m_params;}
+	bool		isActive()	 const	{return m_active;}
+
+signals:
+	void valueChanged(double v);
 
 protected:
 	//Static members
-	static std::map<uint16_t, qtControlUnit*>		__tmpUnits;		//Units that have been created but not activated
-	static std::map<uint16_t, qtControlUnit*>		__activeUnits;	//Active units
-	static uint16_t									__tmp_id;		//Temporary id for inactive units - real id obtained from client
+	static std::map<uint16_t, qtControlUnit*>		__allUnits;	//All units that have been created across all clients
+	static uint16_t									__id;		//Unique unit ID used by the server to keep track of units
 
-	//Basic Unit Info
-	uint16_t	m_id;
-	uint8_t		m_channel;
-	UNIT_TYPE	m_type;
-	QString		m_name;
-	double		m_value;
-	prop_t		m_properties;
+	//Properties
+	params_t	m_params;
+	bool		m_active;
 
 	//Qt Members
-	QLineEdit*	m_valueEdit		//Display the unit's value
-	QLabel*		m_label			//Display the unit's name
+	QLineEdit*	m_valueEdit;		//Display the unit's value
+	QLabel*		m_label;			//Display the unit's name
+
+	//Client connection
+	std::shared_ptr<net::connection<MSG_TYPE>>	m_client;
 };
 
 #endif

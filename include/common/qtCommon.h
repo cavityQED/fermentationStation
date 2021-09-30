@@ -39,4 +39,23 @@
 //Assert macro
 #define ASSERT(condition) { if(!(condition)) {std::cout << "\nAssert Failed: " << #condition << " @ " << __FILE__ << ", line " << __LINE__ << '\n'; break;}}
 
+//Redefinitions
+#define net_connection_ptr	std::shared_ptr<net::connection<MSG_TYPE>>
+
+enum MSG_TYPE {
+	ACTIVATE,
+	ADD,
+	REMOVE,
+	READ,
+	SET
+};
+
+enum UNIT_TYPE {
+	THERMISTOR,
+	DS18B20,
+	DHT,
+	FAN,
+	HEATER
+};
+
 #endif

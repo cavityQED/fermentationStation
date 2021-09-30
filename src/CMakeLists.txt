@@ -9,6 +9,7 @@ include_directories(/usr/include/x86_64-linux-gnu/qt5)
 include_directories(/usr/include/x86_64-linux-gnu/qt5/QtCore)
 include_directories(/usr/include/x86_64-linux-gnu/qt5/QtWidgets)
 include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/../include)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 if(Qt5Core_FOUND)
@@ -24,9 +25,11 @@ add_subdirectory(control)
 add_subdirectory(common)
 
 set(LINKED_LIBS		pthread
-					${QT_LIBRARIES})
+					${QT_LIBRARIES}
+					control)
 
-add_library				(fermentationStation libMain.cpp)
+add_library				(fermentationStation 	libMain.cpp)
+
 target_link_libraries	(fermentationStation ${LINKED_LIBS})
 target_compile_options	(fermentationStation PRIVATE -fPIC)
 
