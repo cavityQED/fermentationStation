@@ -46,6 +46,7 @@
 #define net_connection_ptr	std::shared_ptr<net::connection<MSG_TYPE>>
 
 enum MSG_TYPE {
+	NOP,
 	ACTIVATE,
 	DEACTIVATE,
 	ADD,

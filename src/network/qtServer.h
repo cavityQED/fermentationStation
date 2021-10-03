@@ -31,13 +31,13 @@ public:
 	*/
 	virtual void onMessage(net_connection_ptr client, net::message<MSG_TYPE>& msg) override;
 
-	virtual bool onClientConnect(net_connection_ptr client) override {
-		return true;
-	}	
+	virtual bool onClientConnect(net_connection_ptr client) override;
 
 protected:
 	//Thread for the server to read messages
 	std::thread		m_updateThread;
+	qtControlUnit*	m_unit;
+	QPushButton* c;
 };
 
 #endif

@@ -1,5 +1,6 @@
 include_directories(${CMAKE_SOURCE_DIR})
-set(SOURCE_FILES	qtControlUnit.cpp)
+set(SOURCE_FILES	qtControlUnit.cpp
+					qtControlCell.cpp)
 
 add_library(control qtControlUnit.cpp )#${CMAKE_SOURCE_DIR}/../include/control/qtControlUnit.h)
 target_link_libraries(control Qt5::Widgets
