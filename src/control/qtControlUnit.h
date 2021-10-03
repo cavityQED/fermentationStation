@@ -5,7 +5,9 @@
 
 class qtControlUnit : public QWidget
 {
+private:
 	Q_OBJECT
+
 public:
 	//Struct to pass info 
 	struct params_t {
@@ -25,7 +27,7 @@ public:
 	*		Adds an entry to the tmpUnits map
 	*/
 	qtControlUnit(const params_t& p, QWidget* parent = nullptr);
-	~qtControlUnit() {}
+	~qtControlUnit();
 
 	/**
 	*	Get Unit
@@ -78,6 +80,9 @@ public:
 	params_t	params()	const	{return m_params;}
 	bool		isActive()	const	{return m_active;}
 
+protected:
+	bool event(QEvent* e);
+
 public slots:
 	/**
 	*	Read
@@ -102,7 +107,7 @@ public slots:
 	*		Send an activate message to the client to connect the unit with the associated client object
 	*
 	*/
-	void connect() {
+	void connectToClient() {
 		if(m_client) {
 			net::message<MSG_TYPE> msg;
 			msg.header.id = ACTIVATE;
@@ -113,12 +118,12 @@ public slots:
 	}
 
 signals:
-	void valueChanged(double v);
+	void valueChange(double v);
 
 protected:
 	//Static members
-	static std::map<uint16_t, qtControlUnit*>		__allUnits;	//All units that have been created across all clients
-	static uint16_t									__id;		//Unique unit ID used by the server to keep track of units
+	static std::map<uint16_t, qtControlUnit*>	__allUnits;	//All units that have been created across all clients
+	static uint16_t								__id;		//Unique unit ID used by the server to keep track of units
 
 	//Properties
 	params_t	m_params;

@@ -1,12 +1,11 @@
-/*	{CMAKE_SOURCE_DIR}/src/control/qtControlUnit.cpp	*/
-#include "control/qtControlUnit.h"
+#include "qtControlUnit.h"
 
-std::map<uint16_t, qtControlUnit*>	__allUnits	= {};
-uint16_t							__id		= 0;
+std::map<uint16_t, qtControlUnit*>	qtControlUnit::__allUnits	= {};
+uint16_t							qtControlUnit::__id			= 0;
 
-qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(parent), 
-																	m_params(std::move(p))
+qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(parent)
 {
+	m_params = p;
 	m_params.id = __id++;
 
 	__allUnits.insert(std::pair<uint16_t, qtControlUnit*>(m_params.id, this));
@@ -23,6 +22,11 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(pare
 	layout->addWidget(m_valueEdit);
 
 	setLayout(layout);
+}
+
+qtControlUnit::~qtControlUnit() 
+{
+
 }
 
 bool qtControlUnit::activate(const params_t& p, std::shared_ptr<net::connection<MSG_TYPE>> client)
@@ -53,6 +57,18 @@ void qtControlUnit::update(uint16_t id, double v)
 	auto u = getUnit(id);
 	if(u) {
 		u->setValue(v);
-		u->emit valueChanged(v);
+		u->emit valueChange(v);
 	}
+}
+
+bool qtControlUnit::event(QEvent* e)
+{
+	if(e->type() == msgEvent::type) {
+		auto m = static_cast<msgEvent*>(e);
+		std::cout << "[" << m_params.id << "] Recieved Message:\n" << m->msg << '\n';
+		return true;
+	}
+
+	else
+		return QWidget::event(e);
 }

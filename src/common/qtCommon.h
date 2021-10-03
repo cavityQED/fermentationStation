@@ -26,8 +26,11 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QAction>
+#include <QEvent>
+#include <QApplication>
 
 //asio network files
+#include "net_common.h"
 #include "net_server.h"
 #include "net_client.h"
 #include "net_connection.h"
@@ -58,6 +61,17 @@ enum UNIT_TYPE {
 	DHT,
 	FAN,
 	HEATER
+};
+
+class msgEvent : public QEvent
+{
+public:
+	static const QEvent::Type type = static_cast<QEvent::Type>(1231);
+
+	msgEvent(net_connection_ptr ptr, const net::message<MSG_TYPE>& m);
+
+	net_connection_ptr		client;
+	net::message<MSG_TYPE>	msg;
 };
 
 #endif
