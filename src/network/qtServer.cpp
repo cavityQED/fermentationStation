@@ -6,7 +6,10 @@ qtServer::qtServer(QWidget* parent, uint16_t port) :	QWidget(parent),
 
 }
 
-qtServer::~qtServer() {}
+qtServer::~qtServer() {
+	if(m_updateThread.joinable())
+		m_updateThread.join();
+}
 
 
 void qtServer::update(size_t max_messages, bool wait)
