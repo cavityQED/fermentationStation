@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 
 //Qt libraries
 #include <QObject>

@@ -13,7 +13,7 @@ public:
 	*	Constructor
 	*
 	*/
-	qtServer(QWidget* parent = nullptr, uint16_t port = 22);
+	qtServer(QWidget* parent = nullptr, uint16_t port = 1231);
 
 	/**
 	*	Destructor

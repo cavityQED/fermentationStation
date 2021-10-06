@@ -9,7 +9,6 @@ qtControlStation::qtControlStation(const params_t& p, QWidget* parent) : QWidget
 	for(int row = 0; row < p.rows; row++) {
 		for(int col = 0; col < p.cols; col++) {
 			qtControlCell* cell = new qtControlCell(p.cells[row*p.cols + col]);
-			PRINT_LINE;
 			cell->setClient(p.client);
 			m_cells.push_back(cell);
 			grid->addWidget(cell, row, col);
