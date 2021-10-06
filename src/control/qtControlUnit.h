@@ -11,11 +11,12 @@ private:
 public:
 	//Struct to pass info 
 	struct params_t {
-		uint16_t		id;
-		uint16_t		client_id;
-		uint8_t			channel;
-		double			value;
-		UNIT_TYPE		type;
+		uint16_t		id			= 0;
+		uint16_t		client_id	= 0;
+		uint8_t			channel		= 0;
+		double			value		= 0;
+		UNIT_TYPE		type		= THERMISTOR;
+		char			name[32];
 	};
 
 	/*
@@ -47,16 +48,7 @@ public:
 	*		Connect unit to remote sensor on client device
 	*
 	*/
-	static bool activate(const params_t& p, net_connection_ptr client);
-
-	/**
-	*	Deactivate
-	*		Remove the unit from active units
-	*		Give unit new temp id and add to temp units
-	*
-	*/
-	static bool deactivate(uint16_t id);
-	static bool deactivate(const params_t& p) {return deactivate(p.id);}
+	static bool connect(const params_t& p, net_connection_ptr client);
 
 	/**
 	*	Update
@@ -75,16 +67,18 @@ public:
 	void setEdit(double v)						{m_valueEdit->setText(QString::number(v));}
 	void setValue(double v)						{m_params.value = v; setEdit(v);}
 	void setClient(net_connection_ptr client)	{m_client = client;}
-	void setActive(bool active)					{m_active = active;}
+	void setActive(bool a)						{m_active = a;}
+	void setConnected(bool c)					{m_connected = c;}
 
 	//Getters
-	uint16_t	id()		const	{return m_params.id;}
-	uint16_t	clientID()	const	{return m_params.client_id;}
-	uint8_t		channel()	const	{return m_params.channel;}
-	UNIT_TYPE	type()		const	{return m_params.type;}
-	params_t	params()	const	{return m_params;}
-	QString		name()		const	{return m_name;}
-	bool		isActive()	const	{return m_active;}
+	uint16_t	id()			const	{return m_params.id;}
+	uint16_t	clientID()		const	{return m_params.client_id;}
+	uint8_t		channel()		const	{return m_params.channel;}
+	UNIT_TYPE	type()			const	{return m_params.type;}
+	params_t	params()		const	{return m_params;}
+	QString		name()			const	{return m_name;}
+	bool		isActive()		const	{return m_active;}
+	bool		isConnected()	const	{return (m_client == nullptr)? false : m_connected && m_client->isConnected();}
 
 protected:
 	bool event(QEvent* e);
@@ -99,12 +93,14 @@ public slots:
 		if(!m_active)
 			return;
 
-		net::message<MSG_TYPE> msg;
-		msg.header.id = READ;
-		msg << m_params;
 		if(m_client && m_client->isConnected()) {
+			net::message<MSG_TYPE> msg;
+			msg.header.id = READ;
+			msg << m_params;
 			//get server pointer
 			//send message through pointer
+			//but for now just send through client
+			m_client->send(msg);
 		}
 	}
 
@@ -117,7 +113,7 @@ public slots:
 		std::cout << "Attempting connection\n";
 		if(m_client) {
 			net::message<MSG_TYPE> msg;
-			msg.header.id = ACTIVATE;
+			msg.header.id = CONNECT;
 			msg << m_params;
 			//get server pointer
 			//send message through pointer
@@ -135,9 +131,10 @@ protected:
 	static uint16_t								__id;		//Unique unit ID used by the server to keep track of units
 
 	//Properties
-	QString		m_name;
-	params_t	m_params;
-	bool		m_active = false;
+	QString		m_name 		= "";
+	params_t	m_params	= {};
+	bool		m_active	= false;
+	bool		m_connected = false;
 
 	//Qt Members
 	QLineEdit*	m_valueEdit;		//Display the unit's value

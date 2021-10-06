@@ -7,6 +7,7 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(pare
 {
 	m_params = p;
 	m_params.id = __id++;
+	m_name.append(p.name);
 
 	__allUnits.insert(std::pair<uint16_t, qtControlUnit*>(m_params.id, this));
 
@@ -14,6 +15,7 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(pare
 	QVBoxLayout* layout = new QVBoxLayout();
 
 	m_label	= new QLabel();
+	m_label->setText(m_name);
 	layout->addWidget(m_label);
 
 	m_valueEdit = new QLineEdit();
@@ -35,32 +37,22 @@ uint16_t qtControlUnit::addUnit(const params_t& p, QWidget* parent)
 	return tmp->id();
 }
 
-bool qtControlUnit::activate(const params_t& p, net_connection_ptr client)
+bool qtControlUnit::connect(const params_t& p, net_connection_ptr client)
 {
 	auto u = getUnit(p.id);
 	if(u) {
 		u->setClientID(p.client_id);
 		u->setClient(client);
-		u->setActive(true);
+		u->setConnected(true);
 		return true;
 	}
 	return false;	
 }
 
-bool qtControlUnit::deactivate(uint16_t id)
-{
-	auto u = getUnit(id);
-	if(u) {
-		u->setActive(false);
-		return true;
-	}
-	return false;
-}
-
 void qtControlUnit::update(uint16_t id, double v)
 {
 	auto u = getUnit(id);
-	if(u) {
+	if(u && u->isActive()) {
 		u->setValue(v);
 		u->emit valueChange(v);
 	}

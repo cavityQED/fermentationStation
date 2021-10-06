@@ -1,4 +1,5 @@
-set(SOURCE_FILES	qtServer.cpp)
+set(SOURCE_FILES	qtServer.cpp
+					qtServerWindow.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR})
 

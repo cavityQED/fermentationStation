@@ -2,7 +2,7 @@
 #define QTSERVER_H
 
 #include "common/qtCommon.h"
-#include "control/qtControlUnit.h"
+#include "control/qtControlStation.h"
 
 class qtServer : public QWidget, public net::server<MSG_TYPE>
 {
@@ -34,10 +34,14 @@ public:
 	virtual bool onClientConnect(net_connection_ptr client) override;
 
 protected:
+	bool event(QEvent* e);
+
+	
+
+protected:
 	//Thread for the server to read messages
-	std::thread		m_updateThread;
-	qtControlUnit*	m_unit;
-	QPushButton* c;
+	std::thread			m_updateThread;
+	qtControlStation*	m_station;
 };
 
 #endif

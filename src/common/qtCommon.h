@@ -46,9 +46,8 @@
 #define net_connection_ptr	std::shared_ptr<net::connection<MSG_TYPE>>
 
 enum MSG_TYPE {
-	NOP,
-	ACTIVATE,
-	DEACTIVATE,
+	ERROR,
+	CONNECT,
 	ADD,
 	REMOVE,
 	READ,
@@ -70,6 +69,18 @@ public:
 	static const QEvent::Type type = static_cast<QEvent::Type>(1231);
 
 	msgEvent(net_connection_ptr ptr, const net::message<MSG_TYPE>& m);
+
+	net_connection_ptr		client;
+	net::message<MSG_TYPE>	msg;
+};
+
+class connectEvent : public QEvent
+{
+public:
+	static const QEvent::Type type = static_cast<QEvent::Type>(1232);
+
+	connectEvent(net_connection_ptr ptr, const net::message<MSG_TYPE>& m = {}) :
+		QEvent(type), client(ptr), msg(std::move(m)) {}
 
 	net_connection_ptr		client;
 	net::message<MSG_TYPE>	msg;
