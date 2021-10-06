@@ -74,9 +74,10 @@ public:
 	uint16_t	id()			const	{return m_params.id;}
 	uint16_t	clientID()		const	{return m_params.client_id;}
 	uint8_t		channel()		const	{return m_params.channel;}
+	double		value()			const	{return m_params.value;}
 	UNIT_TYPE	type()			const	{return m_params.type;}
-	params_t	params()		const	{return m_params;}
 	QString		name()			const	{return m_name;}
+	params_t	params()		const	{return m_params;}
 	bool		isActive()		const	{return m_active;}
 	bool		isConnected()	const	{return (m_client == nullptr)? false : m_connected && m_client->isConnected();}
 
