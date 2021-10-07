@@ -14,6 +14,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <bitset>
 
 //Qt libraries
 #include <QObject>
@@ -54,6 +55,7 @@ enum MSG_TYPE {
 	READ,
 	SET,
 	UPDATE,
+	CLIENT_INFO,
 };
 
 enum UNIT_TYPE {

@@ -16,6 +16,5 @@ qtControlStation::qtControlStation(const params_t& p, QWidget* parent) : QWidget
 	}
 
 	setLayout(grid);
-
-	startTimer(std::chrono::seconds(5));
+	//startTimer(std::chrono::seconds(5));
 }

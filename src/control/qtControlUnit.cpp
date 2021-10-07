@@ -23,6 +23,9 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(pare
 	layout->addWidget(m_valueEdit);
 
 	setLayout(layout);
+
+	editNameAct = new QAction(tr("Edit Name"), this);
+	QObject::connect(editNameAct, &QAction::triggered, this, &qtControlUnit::editName);
 }
 
 qtControlUnit::~qtControlUnit() 
@@ -46,7 +49,10 @@ bool qtControlUnit::connect(const params_t& p, net_connection_ptr client)
 		u->setConnected(true);
 		return true;
 	}
-	return false;	
+	else {
+		std::cout << "Error Connecting\n";
+		return false;	
+	}
 }
 
 void qtControlUnit::update(uint16_t id, double v)
@@ -68,4 +74,11 @@ bool qtControlUnit::event(QEvent* e)
 
 	else
 		return QWidget::event(e);
+}
+
+void qtControlUnit::contextMenuEvent(QContextMenuEvent* e)
+{
+	QMenu menu(this);
+	menu.addAction(editNameAct);
+	menu.exec(e->globalPos());
 }

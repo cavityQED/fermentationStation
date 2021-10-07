@@ -3,6 +3,8 @@
 
 #include "common/qtCommon.h"
 
+#include <QContextMenuEvent>
+
 class qtControlUnit : public QWidget
 {
 private:
@@ -17,6 +19,16 @@ public:
 		double			value		= 0;
 		UNIT_TYPE		type		= THERMISTOR;
 		char			name[32];
+
+		friend std::ostream& operator<<(std::ostream& out, const params_t& p) {
+			out << "\n\tName:\t"		<< p.name; 
+			out << "\n\tID:\t"		 	<< (int)p.id;
+			out << "\n\tClient ID:\t"	<< (int)p.client_id;
+			out << "\n\tChannel:\t"		<< (int)p.channel;
+			out << "\n\ttype:\t"		<< p.type;
+			out << '\n';
+			return out;
+		}
 	};
 
 	/*
@@ -82,7 +94,9 @@ public:
 	bool		isConnected()	const	{return (m_client == nullptr)? false : m_connected && m_client->isConnected();}
 
 protected:
-	bool event(QEvent* e);
+	virtual bool event(QEvent* e) override;
+
+	virtual void contextMenuEvent(QContextMenuEvent* e) override;
 
 public slots:
 	/**
@@ -123,6 +137,13 @@ public slots:
 		}
 	}
 
+	void editName() {
+		std::string name;
+		std::getline(std::cin, name);
+		QString qName(name.c_str());
+		setName(qName);
+	}
+
 signals:
 	void valueChange(double v);
 
@@ -143,6 +164,9 @@ protected:
 
 	//Client connection
 	std::shared_ptr<net::connection<MSG_TYPE>>	m_client;
+
+	//Actions
+	QAction*	editNameAct;
 };
 
 #endif

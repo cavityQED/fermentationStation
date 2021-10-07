@@ -23,19 +23,21 @@ void qtServer::update(size_t max_messages, bool wait)
 
 void qtServer::onMessage(net_connection_ptr client, net::message<MSG_TYPE>& msg)
 {
-	std::cout << "NEW Message:\n" << msg << '\n';
+	std::cout << "RECIEVED Message:\n" << msg << '\n';
 	qtControlUnit::params_t	p;
 
-	if(msg.header.size >= sizeof(qtControlUnit::params_t))
-		msg >> p;
-		//std::memcpy(&p, msg.body.data(), sizeof(qtControlUnit::params_t));
-	
 	switch(msg.header.id) {
 		case CONNECT:
+			msg >> p;
 			qtControlUnit::connect(p, client);
 			break;
 		case UPDATE:
+			msg >> p;
 			qtControlUnit::update(p);
+			break;
+		case CLIENT_INFO:
+			std::cout << "Recieved Client Info\n";
+			QApplication::postEvent(parentWidget(), new connectEvent(client, msg));
 			break;
 		default:
 			break;
@@ -44,7 +46,7 @@ void qtServer::onMessage(net_connection_ptr client, net::message<MSG_TYPE>& msg)
 
 bool qtServer::onClientConnect(net_connection_ptr client)
 {
-	QApplication::postEvent(this, new connectEvent(client));
+	//QApplication::postEvent(this, new connectEvent(client));
 	return true;
 }
 
@@ -53,6 +55,7 @@ bool qtServer::event(QEvent* e)
 	if(e->type() == connectEvent::type) {
 		std::cout << "Connection Event\n";
 		auto conn = static_cast<connectEvent*>(e);
+	/*
 		qtControlStation::params_t				station_params;
 		std::vector<qtControlUnit::params_t>	cell_params;
 
@@ -106,9 +109,9 @@ bool qtServer::event(QEvent* e)
 		cell_params.push_back(liq_unit_params);
 		cell_params.push_back(out_unit_params);
 		station_params.cells.push_back(cell_params);
-
 		m_station = new qtControlStation(station_params, this);
 		m_station->show();
+	*/
 
 		return true;
 	}
