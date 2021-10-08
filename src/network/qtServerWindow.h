@@ -5,6 +5,8 @@
 #include "qtServer.h"
 
 #include <QMainWindow>
+#include <QActionGroup>
+#include <QStackedWidget>
 
 class qtServerWindow : public QMainWindow
 {
@@ -26,11 +28,19 @@ protected:
 			return QWidget::event(e);
 	}
 
+public slots:
+	void changeCentralWidget() {
+		std::cout << "Setting Widget\n";
+		//Should check if sender is really an available station
+		m_stack->setCurrentWidget(static_cast<QWidget*>(QWidget::sender()));
+	}
+
 protected:
 	qtServer*						m_server;
-	qtControlStation*				m_centralStation;
 	std::vector<qtControlStation*>	m_availableStations;
+	QStackedWidget*					m_stack;
 	QToolBar*						m_stationToolBar;
+	QActionGroup*					m_toolBarActionGroup;
 
 };
 

@@ -13,6 +13,10 @@ qtServerWindow::qtServerWindow(QWidget* parent) : QMainWindow(parent)
 	addToolBar(Qt::LeftToolBarArea, m_stationToolBar);
 	m_stationToolBar->setOrientation(Qt::Vertical);
 
+	m_toolBarActionGroup = new QActionGroup(this);
+
+	m_stack = new QStackedWidget(this);
+	setCentralWidget(m_stack);
 }
 
 void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr client)
@@ -30,7 +34,6 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 	msg >> units_per_cell;
 	std::cout << "\tUnits per Cell: " << (int)units_per_cell << '\n';
 
-
 	for(int c = 0; c < (int)num_cells; c++) {
 		cell_params.clear();
 		for(int u = 0; u < (int)units_per_cell; u++) {
@@ -43,14 +46,12 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 	station_params.rows = 1;
 	station_params.cols = 4;
 	station_params.client = client;
+	station_params.name = QString::number(m_availableStations.size()+1);
 
 	qtControlStation* tmp = new qtControlStation(station_params, this);
-	setCentralWidget(tmp);
-	tmp->show();
+	m_stack->addWidget(tmp);
+	connect(tmp, &qtControlStation::centralWidgetRequest, this, &qtServerWindow::changeCentralWidget);
 
-	m_centralStation = tmp;
-	m_availableStations.push_back(tmp);
-
-	QAction* act = new QAction(QString::number(m_availableStations.size()));
-	m_stationToolBar->addAction(act);
+	m_stationToolBar->addAction(tmp->selectAction());
+	m_toolBarActionGroup->addAction(tmp->selectAction());
 }

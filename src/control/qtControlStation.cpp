@@ -16,5 +16,10 @@ qtControlStation::qtControlStation(const params_t& p, QWidget* parent) : QWidget
 	}
 
 	setLayout(grid);
+
+	m_selectAct = new QAction(p.name);
+	m_selectAct->setCheckable(true);
+	connect(m_selectAct, &QAction::triggered, this, &qtControlStation::centralWidgetRequest);
+
 	//startTimer(std::chrono::seconds(5));
 }

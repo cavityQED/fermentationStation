@@ -12,6 +12,7 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QGroupBox(pa
 	__allUnits.insert(std::pair<uint16_t, qtControlUnit*>(m_params.id, this));
 
 	m_labelName 	= new QLabel();
+	m_labelName->setText(p.name);
 	
 	m_labelChannel	= new QLabel();
 	m_labelChannel->setText("Channel " + QString::number(m_params.channel));
