@@ -6,7 +6,12 @@ qtServerWindow::qtServerWindow(QWidget* parent) : QMainWindow(parent)
 	m_server->start();
 	m_server->update();
 
-	setGeometry(100, 100, 1024, 960);
+	setGeometry(100, 100, 1024, 480);
+
+
+	m_stationToolBar = new QToolBar("Stations");
+	addToolBar(Qt::LeftToolBarArea, m_stationToolBar);
+	m_stationToolBar->setOrientation(Qt::Vertical);
 
 }
 
@@ -39,7 +44,13 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 	station_params.cols = 4;
 	station_params.client = client;
 
-	qtControlStation* m_station = new qtControlStation(station_params, this);
-	setCentralWidget(m_station);
-	m_station->show();
+	qtControlStation* tmp = new qtControlStation(station_params, this);
+	setCentralWidget(tmp);
+	tmp->show();
+
+	m_centralStation = tmp;
+	m_availableStations.push_back(tmp);
+
+	QAction* act = new QAction(QString::number(m_availableStations.size()));
+	m_stationToolBar->addAction(act);
 }

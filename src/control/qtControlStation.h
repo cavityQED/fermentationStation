@@ -17,7 +17,7 @@ public:
 
 	qtControlStation(const params_t& p, QWidget* parent = nullptr);
 	~qtControlStation() {}
-
+	
 protected:
 	virtual void timerEvent(QTimerEvent* e) override {
 		for(auto &c : m_cells)
