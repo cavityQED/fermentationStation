@@ -6,7 +6,8 @@ qtServerWindow::qtServerWindow(QWidget* parent) : QMainWindow(parent)
 	m_server->start();
 	m_server->update();
 
-	//setCentralWidget(m_server);
+	setGeometry(100, 100, 1024, 960);
+
 }
 
 void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr client)

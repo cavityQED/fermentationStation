@@ -4,8 +4,9 @@
 #include "common/qtCommon.h"
 
 #include <QContextMenuEvent>
+#include <QLCDNumber>
 
-class qtControlUnit : public QWidget
+class qtControlUnit : public QGroupBox
 {
 private:
 	Q_OBJECT
@@ -74,9 +75,9 @@ public:
 
 	//Setters
 	void setClientID	(uint16_t id)			{m_params.client_id = id;}
-	void setLabel(const QString name)			{m_label->setText(name);}
-	void setName(const QString name)			{m_name = name; setLabel(name);}
-	void setEdit(double v)						{m_valueEdit->setText(QString::number(v));}
+	void setLabel(const QString name)			{m_labelName->setText(name);}
+	void setName(const QString name)			{m_name = name; std::strcpy(m_params.name, name.toStdString().c_str()), setLabel(name);}
+	void setEdit(double v)						{m_labelValue->display(std::round(v*100)/100);}
 	void setValue(double v)						{m_params.value = v; setEdit(v);}
 	void setClient(net_connection_ptr client)	{m_client = client;}
 	void setActive(bool a)						{m_active = a;}
@@ -159,8 +160,10 @@ protected:
 	bool		m_connected = false;
 
 	//Qt Members
-	QLineEdit*	m_valueEdit;		//Display the unit's value
-	QLabel*		m_label;			//Display the unit's name
+	QLCDNumber*	m_labelValue;		//Display the unit's value
+	QLabel*		m_labelName;		//Display the unit's name
+	QLabel*		m_labelChannel;		//Display the unit's channel
+	QLabel*		m_labelType;		//Display the unit's type
 
 	//Client connection
 	std::shared_ptr<net::connection<MSG_TYPE>>	m_client;

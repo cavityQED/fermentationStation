@@ -3,7 +3,7 @@
 std::map<uint16_t, qtControlUnit*>	qtControlUnit::__allUnits	= {};
 uint16_t							qtControlUnit::__id			= 0;
 
-qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(parent)
+qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QGroupBox(parent)
 {
 	m_params = p;
 	m_params.id = __id++;
@@ -11,18 +11,28 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QWidget(pare
 
 	__allUnits.insert(std::pair<uint16_t, qtControlUnit*>(m_params.id, this));
 
-	//Main layout
-	QVBoxLayout* layout = new QVBoxLayout();
+	m_labelName 	= new QLabel();
+	
+	m_labelChannel	= new QLabel();
+	m_labelChannel->setText("Channel " + QString::number(m_params.channel));
+	
+	m_labelType		= new QLabel();
+	m_labelType->setText(unitTypeQString(m_params.type));
 
-	m_label	= new QLabel();
-	m_label->setText(m_name);
-	layout->addWidget(m_label);
+	m_labelValue	= new QLCDNumber();
+	m_labelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	m_labelValue->setFixedSize(50,30);
+	m_labelValue->setDigitCount(4);
+	m_labelValue->setSegmentStyle(QLCDNumber::Filled);
 
-	m_valueEdit = new QLineEdit();
-	m_valueEdit->setReadOnly(true);
-	layout->addWidget(m_valueEdit);
 
-	setLayout(layout);
+	QGridLayout* grid = new QGridLayout();
+	grid->setColumnMinimumWidth(1, 40);
+	grid->addWidget(m_labelName, 0, 0);
+	grid->addWidget(m_labelType, 3, 0);
+	grid->addWidget(m_labelChannel, 4, 0);
+	grid->addWidget(m_labelValue, 2, 2, 3, 1);
+	setLayout(grid);
 
 	editNameAct = new QAction(tr("Edit Name"), this);
 	QObject::connect(editNameAct, &QAction::triggered, this, &qtControlUnit::editName);

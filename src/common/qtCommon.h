@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QLabel>
+#include <QFrame>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -65,6 +66,22 @@ enum UNIT_TYPE {
 	FAN,
 	HEATER
 };
+
+static QString unitTypeQString(const UNIT_TYPE type)
+{
+	switch(type) {
+		case THERMISTOR:
+			return "Thermistor";
+		case DS18B20:
+			return "DS18B20";
+		case DHT:
+			return "Fan";
+		case HEATER:
+			return "Heater";
+		default:
+			return "";
+	}
+}
 
 class msgEvent : public QEvent
 {
