@@ -13,6 +13,8 @@ public:
 
 	void setClient(net_connection_ptr client);
 
+	const std::vector<qtControlUnit*>& getUnits() const {return m_units;}
+
 public slots:
 	void connectToClient() {
 		for(auto &u : m_units)

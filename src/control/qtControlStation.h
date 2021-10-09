@@ -2,6 +2,7 @@
 #define QTCONTROLSTATION_H
 
 #include "common/qtCommon.h"
+#include "common/qtLogger.h"
 #include "control/qtControlCell.h"
 
 class qtControlStation : public QWidget
@@ -36,6 +37,8 @@ protected:
 	net_connection_ptr				m_client;
 
 	QAction* m_selectAct;
+
+	qtLogger* m_log;
 };
 
 #endif
