@@ -28,11 +28,23 @@ qtControlUnit::qtControlUnit(const params_t& p, QWidget* parent) : 	QGroupBox(pa
 
 
 	QGridLayout* grid = new QGridLayout();
-	grid->setColumnMinimumWidth(1, 40);
 	grid->addWidget(m_labelName, 0, 0);
 	grid->addWidget(m_labelType, 3, 0);
 	grid->addWidget(m_labelChannel, 4, 0);
 	grid->addWidget(m_labelValue, 2, 2, 3, 1);
+	if(m_params.type == FAN || m_params.type == HEATER) {
+		m_incButton = new QPushButton(QChar(0x25B2));
+		m_decButton = new QPushButton(QChar(0x25BC));
+
+		grid->addWidget(m_incButton, 1, 1);
+		grid->addWidget(m_decButton, 3, 1);
+
+		QWidget::connect(m_incButton, &QPushButton::released, this, &qtControlUnit::increase);
+		QWidget::connect(m_decButton, &QPushButton::released, this, &qtControlUnit::decrease);
+	}
+	else
+		grid->setColumnMinimumWidth(1, 40);
+	
 	setLayout(grid);
 
 	editNameAct = new QAction(tr("Edit Name"), this);

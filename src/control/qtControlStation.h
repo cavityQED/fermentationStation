@@ -11,6 +11,7 @@ public:
 	struct params_t {
 		net_connection_ptr									client;
 		std::vector<std::vector<qtControlUnit::params_t>>	cells;
+		std::vector<qtControlUnit::params_t>				extraCell;
 		int													rows;
 		int													cols;
 		QString												name;

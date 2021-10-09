@@ -15,6 +15,10 @@ qtControlStation::qtControlStation(const params_t& p, QWidget* parent) : QWidget
 		}
 	}
 
+	qtControlCell* extra = new qtControlCell(p.extraCell, this);
+	extra->setClient(p.client);
+	grid->addWidget(extra, 0, p.cols, p.rows, 1);
+
 	setLayout(grid);
 
 	m_selectAct = new QAction(p.name);

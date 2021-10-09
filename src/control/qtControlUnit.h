@@ -120,6 +120,27 @@ public slots:
 		}
 	}
 
+	void set(double v) {
+		if(!m_active)
+			return;
+
+		if(m_client && m_client->isConnected()) {
+			net::message<MSG_TYPE> msg;
+			msg.header.id = SET;
+			m_params.value = v;
+			msg << m_params;
+			m_client->send(msg);
+		}
+	}
+
+	void increase() {
+		set(std::min((m_params.value + 5), 100.0));
+	}
+
+	void decrease() {
+		set(std::max((m_params.value - 5), 0.0));
+	}
+
 	/**
 	*	Connect to Client
 	*		Send an activate message to the client to connect the unit with the associated client object
@@ -164,6 +185,9 @@ protected:
 	QLabel*		m_labelName;		//Display the unit's name
 	QLabel*		m_labelChannel;		//Display the unit's channel
 	QLabel*		m_labelType;		//Display the unit's type
+
+	QPushButton* m_incButton;
+	QPushButton* m_decButton;
 
 	//Client connection
 	std::shared_ptr<net::connection<MSG_TYPE>>	m_client;

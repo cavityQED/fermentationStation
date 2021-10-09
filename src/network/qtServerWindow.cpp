@@ -34,6 +34,10 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 	msg >> units_per_cell;
 	std::cout << "\tUnits per Cell: " << (int)units_per_cell << '\n';
 
+	uint8_t extra_units;
+	msg >> extra_units;
+	std::cout << "\tExtra Units: " << (int)extra_units << '\n';
+
 	for(int c = 0; c < (int)num_cells; c++) {
 		cell_params.clear();
 		for(int u = 0; u < (int)units_per_cell; u++) {
@@ -41,6 +45,11 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 			cell_params.push_back(unit_params);
 		}
 		station_params.cells.push_back(cell_params);
+	}
+
+	for(int e = 0; e < (int)extra_units; e++) {
+		msg >> unit_params;
+		station_params.extraCell.push_back(unit_params);
 	}
 
 	station_params.rows = 1;
