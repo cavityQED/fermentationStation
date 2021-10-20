@@ -51,9 +51,8 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 		msg >> unit_params;
 		station_params.extraCell.push_back(unit_params);
 	}
-
-	station_params.rows = 1;
 	station_params.cols = 4;
+	station_params.rows = 1;
 	station_params.client = client;
 	station_params.name = QString::number(m_availableStations.size()+1);
 

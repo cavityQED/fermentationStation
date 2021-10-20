@@ -29,10 +29,12 @@ void qtServer::onMessage(net_connection_ptr client, net::message<MSG_TYPE>& msg)
 	switch(msg.header.id) {
 		case CONNECT:
 			msg >> p;
+			std::cout << "Params: " << p << '\n';
 			qtControlUnit::connect(p, client);
 			break;
 		case UPDATE:
 			msg >> p;
+			std::cout << "Params: " << p << '\n';
 			qtControlUnit::update(p);
 			break;
 		case CLIENT_INFO:

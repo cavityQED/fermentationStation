@@ -42,6 +42,8 @@ public:
 	qtControlUnit(const params_t& p, QWidget* parent = nullptr);
 	~qtControlUnit();
 
+
+
 	/**
 	*	Add Unit
 	*		Add a unit and return the id
@@ -53,8 +55,15 @@ public:
 	*	Get Unit
 	*		
 	*/
-	static qtControlUnit* getUnit(uint16_t id)			{return __allUnits.contains(id)? __allUnits[id] : nullptr;}
-	static qtControlUnit* getUnit(const params_t& p)	{return getUnit(p.id);}
+	static qtControlUnit* getUnit(uint16_t id)
+	{
+		return __allUnits.contains(id)? __allUnits[id] : nullptr;
+	}
+
+	static qtControlUnit* getUnit(const params_t& p)
+	{
+		return getUnit(p.id);
+	}
 
 	/**
 	*	Activate
@@ -118,6 +127,7 @@ public slots:
 			//but for now just send through client
 			m_client->send(msg);
 		}
+		std::cout << "Message Sent\n";
 	}
 
 	void set(double v) {

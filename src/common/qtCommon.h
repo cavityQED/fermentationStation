@@ -49,14 +49,14 @@
 #define net_connection_ptr	std::shared_ptr<net::connection<MSG_TYPE>>
 
 enum MSG_TYPE {
-	ERROR,
-	CONNECT,
-	ADD,
-	REMOVE,
-	READ,
-	SET,
-	UPDATE,
-	CLIENT_INFO,
+	ERROR		= 0,
+	CONNECT		= 1,
+	ADD			= 2,
+	REMOVE		= 3,
+	READ		= 4,
+	SET			= 5,
+	UPDATE		= 6,
+	CLIENT_INFO = 7,
 };
 
 enum UNIT_TYPE {
