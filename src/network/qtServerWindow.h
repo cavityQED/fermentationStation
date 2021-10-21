@@ -15,22 +15,13 @@ public:
 	qtServerWindow(QWidget* parent = nullptr);
 
 	void addStation(net::message<MSG_TYPE>& msg, net_connection_ptr client);
+	void addStation(qtControlStation::params_t& params);
 
 protected:
-	virtual bool event(QEvent* e) {
-		if(e->type() == connectEvent::type) {
-			std::cout << "Connection Event\n";
-			auto conn = static_cast<connectEvent*>(e);
-			addStation(conn->msg, conn->client);
-			return true;
-		}
-		else
-			return QWidget::event(e);
-	}
+	virtual bool event(QEvent* e);
 
 public slots:
 	void changeCentralWidget() {
-		std::cout << "Setting Widget\n";
 		//Should check if sender is really an available station
 		m_stack->setCurrentWidget(static_cast<QWidget*>(QWidget::sender()));
 	}
@@ -41,7 +32,6 @@ protected:
 	QStackedWidget*					m_stack;
 	QToolBar*						m_stationToolBar;
 	QActionGroup*					m_toolBarActionGroup;
-
 };
 
 #endif

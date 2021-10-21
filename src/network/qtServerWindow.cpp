@@ -8,7 +8,6 @@ qtServerWindow::qtServerWindow(QWidget* parent) : QMainWindow(parent)
 
 	setGeometry(100, 100, 1024, 480);
 
-
 	m_stationToolBar = new QToolBar("Stations");
 	addToolBar(Qt::LeftToolBarArea, m_stationToolBar);
 	m_stationToolBar->setOrientation(Qt::Vertical);
@@ -62,4 +61,27 @@ void qtServerWindow::addStation(net::message<MSG_TYPE>& msg, net_connection_ptr 
 
 	m_stationToolBar->addAction(tmp->selectAction());
 	m_toolBarActionGroup->addAction(tmp->selectAction());
+}
+
+void qtServerWindow::addStation(qtControlStation::params_t& params)
+{
+	qtControlStation* tmp = new qtControlStation(params, this);
+
+	m_stack->addWidget(tmp);
+	connect(tmp, &qtControlStation::centralWidgetRequest, this, &qtServerWindow::changeCentralWidget);
+
+	m_stationToolBar->addAction(tmp->selectAction());
+	m_toolBarActionGroup->addAction(tmp->selectAction());
+}
+
+bool qtServerWindow::event(QEvent* e)
+{
+	if(e->type() == connectEvent::type)
+	{
+		connectEvent* cEvent = static_cast<connectEvent*>(e);
+		addStation(cEvent->msg, cEvent->client);
+		return true;
+	}
+	else
+		return QWidget::event(e);
 }
